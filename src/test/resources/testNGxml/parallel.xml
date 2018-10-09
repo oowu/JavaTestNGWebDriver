@@ -1,0 +1,18 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Smoke" verbose="1" parallel="classes">
+    <test name="SearchInChrome" >
+        <parameter name="browser" value="Chrome"/>
+        <classes>
+            <class name="uiAutomation.tests.search.GoogleSearchTest" />
+            <class name="uiAutomation.tests.search.YahooSearchTest" />
+        </classes>
+    </test>
+    <test name="SearchInFF" >
+        <parameter name="browser" value="FF"/>
+        <classes>
+            <class name="uiAutomation.tests.search.GoogleSearchTest" />
+            <class name="uiAutomation.tests.search.YahooSearchTest" />
+        </classes>
+    </test>
+</suite>
