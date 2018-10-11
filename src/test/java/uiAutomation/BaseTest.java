@@ -1,9 +1,7 @@
 package uiAutomation;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -11,8 +9,11 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +35,31 @@ public class BaseTest {
     }
 
     @Parameters(value = "browser")
+    @AfterMethod
+    public void afterMethod(@Optional("FF") String browser, ITestResult result) {
+        if(!result.isSuccess()){
+            takeScreenshot(result);
+        }
+
+        driver.quit();
+    }
+
+    private void takeScreenshot(ITestResult result){
+        try {
+            File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+            String fileName = "/" + result.getInstanceName() + "/" + result.getName() + ".png";
+            String filePath = System.getProperty("user.dir")
+                    + "/screenshots/" + fileName.replace(" ", "");
+            File destFile = new File(filePath);
+            FileUtils.copyFile(screenshot,destFile);
+        } catch (WebDriverException somePlatformsDontSupportScreenshots) {
+            System.err.println(somePlatformsDontSupportScreenshots.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Parameters(value = "browser")
     @BeforeMethod
     public void openBrowser(@Optional("FF") String browser) {
         switch (browser){
@@ -45,20 +71,20 @@ public class BaseTest {
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
     }
 
-    @AfterMethod
-    public void quitBrowser(){
-        driver.quit();
-    }
-
-
     public void navigateToTheURL(String url) {
         driver.get(url);
         waitForPageLoaded();
     }
 
     public void waitForPageLoaded() {
-        ExpectedCondition<Boolean> pageLoadCondition = driver -> ((JavascriptExecutor)driver).
-                executeScript("return document.readyState").equals("complete");
+        ExpectedCondition<Boolean> pageLoadCondition = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return ((JavascriptExecutor) driver).
+                        executeScript("return document.readyState").equals("complete");
+            }
+        };
+
         WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(pageLoadCondition);
     }
@@ -78,15 +104,6 @@ public class BaseTest {
         }
     }
 
-    public static void sleepFor() {
-        //try catch block Java
-        // https://docs.oracle.com/javase/tutorial/essential/exceptions/catch.html
-        try {
-            Thread.sleep(10 * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void switchOverToNewWindow(String originalHandle){
         sleepFor(1);

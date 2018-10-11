@@ -17,4 +17,8 @@ public class ResultPage {
         String res = driver.findElement(resultStats).getText();
         System.out.println(res);
     }
+
+    public String getPageTitle() {
+        return driver.getTitle();
+    }
 }
