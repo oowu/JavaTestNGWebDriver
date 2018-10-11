@@ -22,9 +22,15 @@ public class BaseTest {
 
     @BeforeClass
     public void setup(){
-        System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + "\\src\\test\\resources\\drivers\\geckodriver.exe");
-        System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\test\\resources\\drivers\\chromedriver.exe");
-        System.setProperty("webdriver.ie.driver", System.getProperty("user.dir") + "\\src\\test\\resources\\drivers\\MicrosoftWebDriver.exe");
+        if(System.getProperty("os.name").startsWith("Windows")){
+            System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + "\\src\\test\\resources\\drivers\\win64\\geckodriver.exe");
+            System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\test\\resources\\drivers\\win64\\chromedriver.exe");
+            System.setProperty("webdriver.ie.driver", System.getProperty("user.dir") + "\\src\\test\\resources\\drivers\\win64\\MicrosoftWebDriver.exe");
+        }
+        if(System.getProperty("os.name").startsWith("Mac")) {
+            System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + "/src/test/resources/drivers/macOS/geckodriver");
+            System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "/src/test/resources/drivers/macOS/chromedriver");
+        }
     }
 
     @Parameters(value = "browser")
@@ -51,12 +57,8 @@ public class BaseTest {
     }
 
     public void waitForPageLoaded() {
-        ExpectedCondition<Boolean> pageLoadCondition = new
-                    ExpectedCondition<Boolean>() {
-                        public Boolean apply(WebDriver driver) {
-                            return ((JavascriptExecutor)driver).executeScript("return document.readyState").equals("complete");
-                        }
-                    };
+        ExpectedCondition<Boolean> pageLoadCondition = driver -> ((JavascriptExecutor)driver).
+                executeScript("return document.readyState").equals("complete");
         WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(pageLoadCondition);
     }
