@@ -27,4 +27,23 @@ public class GoogleSearchTest extends BaseTest {
 
         Assert.assertEquals(actualPageTitle, expectedPageTitle);
     }
+
+    @Test
+    public void test002() {
+        MainPage mainPage = new MainPage(driver);
+        ResultPage resultPage = new ResultPage(driver);
+
+        String queryString = "query";
+        mainPage.open();
+
+        mainPage.typeRequestInSearchInput(queryString);
+        mainPage.submitSearch();
+
+        resultPage.printOutAmountOfResult();
+
+        String actualPageTitle = resultPage.getPageTitle();
+        String expectedPageTitle = "queryGoogle Search";
+
+        Assert.assertEquals(actualPageTitle, expectedPageTitle);
+    }
 }
