@@ -15,15 +15,15 @@ public class GoogleSearchTest extends BaseTest {
         ResultPage resultPage = new ResultPage(driver);
 
         String queryString = "query";
-
         mainPage.open();
+
         mainPage.typeRequestInSearchInput(queryString);
         mainPage.submitSearch();
 
         resultPage.printOutAmountOfResult();
 
         String actualPageTitle = resultPage.getPageTitle();
-        String expectedPageTitle = "1234qwer";
+        String expectedPageTitle = "query";
 
         Assert.assertEquals(actualPageTitle, expectedPageTitle);
     }
