@@ -64,7 +64,6 @@ public class BaseTest {
     public void openBrowser(@Optional("FF") String browser) {
         switch (browser){
             case "FF" : driver = new FirefoxDriver(); break;
-            case "IE" : driver = new InternetExplorerDriver(); break;
             case "Chrome" : driver = new ChromeDriver(); break;
         }
 

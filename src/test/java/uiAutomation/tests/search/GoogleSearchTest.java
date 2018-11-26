@@ -6,6 +6,8 @@ import uiAutomation.BaseTest;
 import uiAutomation.pages.google.MainPage;
 import uiAutomation.pages.google.ResultPage;
 
+import java.lang.reflect.Array;
+
 
 public class GoogleSearchTest extends BaseTest {
 
@@ -46,4 +48,6 @@ public class GoogleSearchTest extends BaseTest {
 
         Assert.assertEquals(actualPageTitle, expectedPageTitle);
     }
+
+
 }
